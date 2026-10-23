@@ -287,13 +287,16 @@ function scheduleRefresh() {
     } catch (err) { toast(err.message, { error: true }); }
   }, 150);
 }
-const live = getLiveEvents();
-live.addEventListener('photos', scheduleRefresh);
+// Give the first gallery request priority over auxiliary map and live requests.
+const initialFeed = loadMore();
+initialFeed.then(() => {
+  const live = getLiveEvents();
+  live.addEventListener('photos', scheduleRefresh);
+  return buildMap();
+}).catch((err) => toast(err.message, { error: true }));
 window.addEventListener('focus', scheduleRefresh);
 
 loadFeatured().catch((err) => toast(err.message, { error: true }));
-buildMap().catch((err) => toast(err.message, { error: true }));
-loadMore();
 
 
 $('#categoryFilter').value = state.category;
