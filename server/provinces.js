@@ -1,0 +1,17 @@
+// As 11 províncias de Moçambique (ids iguais aos de public/data/mapa-mocambique.json)
+export const PROVINCES = [
+  { id: 'niassa', name: 'Niassa' },
+  { id: 'cabo-delgado', name: 'Cabo Delgado' },
+  { id: 'nampula', name: 'Nampula' },
+  { id: 'zambezia', name: 'Zambézia' },
+  { id: 'tete', name: 'Tete' },
+  { id: 'manica', name: 'Manica' },
+  { id: 'sofala', name: 'Sofala' },
+  { id: 'inhambane', name: 'Inhambane' },
+  { id: 'gaza', name: 'Gaza' },
+  { id: 'maputo-provincia', name: 'Maputo Província' },
+  { id: 'maputo-cidade', name: 'Maputo Cidade' },
+];
+
+export const PROVINCE_IDS = new Set(PROVINCES.map((p) => p.id));
+export const provinceName = (id) => PROVINCES.find((p) => p.id === id)?.name ?? id;

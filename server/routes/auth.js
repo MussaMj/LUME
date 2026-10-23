@@ -1,0 +1,95 @@
+import { persistentLimit } from '../security.js';
+import { verifyEmails } from '../config.js';
+import { queueAccountEmail, consumeAccountToken } from '../account-mail.js';
+import { Router } from 'express';
+import { db } from '../db.js';
+import {
+  createSession, destroySession, hashPassword, verifyPassword, requireUser, ADMIN_EMAIL, roleForEmail,
+} from '../auth.js';
+import { HttpError, publicUser, socialUrl, text } from '../util.js';
+
+const router = Router();
+const limiter = persistentLimit({scope:'auth',windowMs:15*60e3,max:20});
+
+const RESERVED = new Set(['admin', 'bastidores', 'api', 'media', 'foto', 'descobrir', 'enviar', 'entrar', 'colecoes', '3maine', 'lume']);
+
+router.post('/register', limiter, (req, res) => {
+  const username = text(req.body.username, { max: 30, required: true, label: 'Nome de utilizador' }).toLowerCase();
+  if (!/^[a-z0-9_.]{3,30}$/.test(username) || RESERVED.has(username)) {
+    throw new HttpError(400, 'O nome de utilizador deve ter 3–30 caracteres (letras, números, _ ou .).');
+  }
+  const displayName = text(req.body.displayName, { max: 60, required: true, label: 'Nome' });
+  const email = text(req.body.email, { max: 120, required: true, label: 'Email' }).toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'Email inválido.');
+  if (email === ADMIN_EMAIL) throw new HttpError(403, 'Este endereço está reservado. A conta administrativa deve ser criada pelo responsável no servidor.');
+  const beta = (process.env.BETA_EMAILS || '').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+  if(beta.length && !beta.includes(email))throw new HttpError(403,'Os registos estão limitados aos convidados desta fase de testes.');
+  const password = String(req.body.password ?? '');
+  if(password.length > 128)throw new HttpError(400,'A palavra-passe deve ter até 128 caracteres.');
+  if (password.length < 8) throw new HttpError(400, 'A palavra-passe precisa de pelo menos 8 caracteres.');
+
+  const taken = db.prepare('SELECT username, email FROM users WHERE username = ? OR email = ?').get(username, email);
+  if (taken) {
+    throw new HttpError(409, taken.username === username ? 'Esse nome de utilizador já existe.' : 'Esse email já está registado.');
+  }
+
+  const { lastInsertRowid } = db
+    .prepare('INSERT INTO users (username, display_name, email, password_hash) VALUES (?, ?, ?, ?)')
+    .run(username, displayName, email, hashPassword(password));
+  if(verifyEmails) { queueAccountEmail(Number(lastInsertRowid),'verify'); return res.status(201).json({verificationRequired:true,message:'Enviámos um link para confirmares o teu e-mail.'}); }
+  createSession(res, lastInsertRowid);
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(lastInsertRowid);
+  res.status(201).json({ user: publicUser(user) });
+});
+
+router.post('/login', limiter, (req, res) => {
+  const login = text(req.body.login, { max: 120, required: true, label: 'Utilizador ou email' }).toLowerCase();
+  const password = String(req.body.password ?? '');
+  const user = db.prepare('SELECT * FROM users WHERE username = ? OR email = ?').get(login, login);
+  if (password.length > 128 || !user || !verifyPassword(password, user.password_hash)) {
+    throw new HttpError(401, 'Credenciais incorretas.');
+  }
+  if(verifyEmails && !user.verified_at)throw new HttpError(403,'Confirma o teu e-mail antes de entrar. Podes pedir um novo link abaixo.');
+  user.role = roleForEmail(user.email);
+  db.prepare('UPDATE users SET role = ? WHERE id = ?').run(user.role, user.id);
+  createSession(res, user.id);
+  res.json({ user: publicUser(user) });
+});
+
+router.post('/logout', (req, res) => {
+  destroySession(req, res);
+  res.json({ ok: true });
+});
+
+router.get('/me', (req, res) => {
+  res.json({ user: publicUser(req.user) });
+});
+
+router.patch('/me', requireUser, (req, res) => {
+  const displayName = text(req.body.displayName ?? req.user.display_name, { max: 60, required: true, label: 'Nome' });
+  const bio = text(req.body.bio ?? req.user.bio, { max: 400, label: 'Bio' });
+  const instagram = req.body.instagram !== undefined ? socialUrl(req.body.instagram, 'instagram.com') : req.user.instagram;
+  const behance = req.body.behance !== undefined ? socialUrl(req.body.behance, 'behance.net') : req.user.behance;
+  db.prepare('UPDATE users SET display_name = ?, bio = ?, instagram = ?, behance = ? WHERE id = ?')
+    .run(displayName, bio, instagram, behance, req.user.id);
+  res.json({ user: publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id)) });
+});
+
+const accountLimit=persistentLimit({scope:'account-mail',windowMs:15*60e3,max:5,key:req=>`${req.ip}:${req.path}`});
+for(const [route,kind] of [['request-reset','reset'],['request-verification','verify']]) router.post('/'+route,accountLimit,(req,res)=>{
+  const email=String(req.body.email || '').trim().toLowerCase();
+  const user=db.prepare('SELECT id,verified_at FROM users WHERE email=?').get(email);
+  if(user && (kind==='reset' || !user.verified_at))queueAccountEmail(user.id,kind);
+  res.json({message:'Se o endereço estiver registado, receberás um link por e-mail.'});
+});
+router.post('/verify-email',accountLimit,(req,res)=>{
+  consumeAccountToken(req.body.token,'verify');
+  res.json({message:'E-mail confirmado. Já podes iniciar sessão.'});
+});
+router.post('/reset-password',accountLimit,(req,res)=>{
+  const password=String(req.body.password || '');
+  if(password.length<12 || password.length>128)throw new HttpError(400,'Usa uma palavra-passe com 12 a 128 caracteres.');
+  consumeAccountToken(req.body.token,'reset',password);
+  res.json({message:'Palavra-passe actualizada. Inicia sessão novamente.'});
+});
+export default router;

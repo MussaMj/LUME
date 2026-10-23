@@ -1,0 +1,60 @@
+/* Shared form and feedback styles across the public site and community. */
+:root { --control-bg: #10100f; --control-border: rgba(236,232,225,.22); --control-radius: 10px; }
+body :is(input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="number"], input[type="date"], input[type="datetime-local"], input[type="url"], input[type="tel"], select, textarea),
+body .album-form input, body .frame-choice input[type="number"] {
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: 48px;
+  padding: 13px 16px; border: 1px solid var(--control-border); border-radius: var(--control-radius);
+  background-color: var(--control-bg); color: var(--text, #ece8e1);
+  font: inherit; font-size: 16px; font-weight: 400; line-height: 1.5;
+  transition: border-color .2s, box-shadow .2s;
+}
+body select { padding-right: 38px; background-position: calc(100% - 21px) 52%, calc(100% - 16px) 52%; }
+body textarea { min-height: 120px; resize: vertical; }
+body :is(input, select, textarea):focus-visible, body .album-form input:focus {
+  outline: none; border-color: var(--accent, #d4a373); box-shadow: 0 0 0 3px rgba(212,163,115,.16);
+}
+body :is(input, textarea)::placeholder { color: #858079; opacity: 1; }
+body :is(input, textarea, select):disabled { opacity: .55; cursor: not-allowed; }
+body .field label, body .album-form label { font-size: .82rem; font-weight: 500; letter-spacing: .01em; text-transform: none; color: var(--text, #ece8e1); }
+body .modal__card { border-radius: 16px; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+body .note-dialog { box-sizing: border-box; max-height: 85dvh; overflow-y: auto; border-radius: 16px; padding: 28px; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+body .note-dialog::backdrop { background: rgba(5,5,5,.7); backdrop-filter: blur(6px); }
+.confirmation-dialog .modal__sub { margin: 4px 0 24px; line-height: 1.6; overflow-wrap: anywhere; }
+.confirmation-dialog__actions { display: grid; gap: 10px; }
+.confirmation-dialog__actions .btn { width: 100%; min-height: 48px; }
+.confirmation-dialog__actions .btn--ghost { border-color: transparent; color: var(--muted); }
+.confirmation-dialog__actions .btn--ghost:hover { color: var(--text); background: rgba(255,255,255,.04); }
+body .modal__close { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
+body .modal__close:hover { background: rgba(255,255,255,.06); }
+body .modal :is(button, a):focus-visible, body .note-dialog button:focus-visible { outline: 2px solid var(--accent, #d4a373); outline-offset: 3px; }
+body .toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 200;
+  box-sizing: border-box; width: max-content; max-width: min(520px, calc(100vw - 32px));
+  display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
+  border: 1px solid rgba(212,163,115,.35); border-radius: 14px;
+  background: #191917; color: #ece8e1; box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  font-size: .85rem; line-height: 1.45; opacity: 0; pointer-events: none;
+  transform: translate(-50%, 12px); transition: transform .25s, opacity .25s;
+}
+body .toast.is-visible { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.toast__symbol { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(212,163,115,.12); color: var(--accent, #d4a373); flex: 0 0 30px; }
+.toast__message { min-width: 0; overflow-wrap: anywhere; }
+body .toast__action { flex-shrink: 0; color: var(--accent, #d4a373); font-weight: 500; }
+.toast__dismiss { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%; color: #aaa59e; }
+.toast__dismiss:hover { background: rgba(255,255,255,.08); color: #fff; }
+body .toast--error { border-color: rgba(217,119,106,.5); background: #211917; }
+.toast--error .toast__symbol { color: #d9776a; background: rgba(217,119,106,.12); }
+@media (max-width: 480px) {
+  body .modal__card { padding: 22px; }
+  body .toast { flex-wrap: wrap; }
+  .toast__message { flex: 1; }
+  body .toast__action { margin-left: 42px; }
+  .toast__dismiss { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) { body .toast, body :is(input, select, textarea) { transition: none; } }
+
+.account-help { display:flex; flex-direction:column; align-items:flex-start; gap:16px; font-size:.8rem; }
+
+.account-feedback { font-size:.9rem; line-height:1.6; color:var(--text); }
+.account-feedback.is-error { color:var(--danger); }
+.form-error.is-success { color:var(--accent); }

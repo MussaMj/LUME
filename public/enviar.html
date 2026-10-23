@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enviar fotografia — LUME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <span class="section-head__index">Comunidade</span>
+      <h1 class="page-title reveal">Enviar fotografia</h1>
+      <p class="page-sub reveal">Partilha o teu olhar sobre Moçambique. Cada envio passa por curadoria antes de ser publicado, para manter a galeria ao nível que merece.</p>
+    </div>
+
+    <form class="upload" id="uploadForm" novalidate hidden>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+        <span class="drop__empty">
+          <span class="icon" data-icon="upload"></span>
+          <strong>Arrasta a fotografia para aqui</strong>
+          <span>ou clica para escolher · JPG, PNG ou WebP · originais até 40 MB</span>
+          <span class="hint">Mínimo 1200 px no lado maior · recomendado 2000 px ou mais</span>
+        </span>
+        <img id="preview" alt="Pré-visualização">
+        <span class="drop__change">Trocar imagem</span>
+      </label>
+
+      <div class="upload-form">
+        <div class="field">
+          <label for="title">Título <span class="req">*</span></label>
+          <input type="text" id="title" name="title" maxlength="90" required placeholder="Ex.: Pescadores ao amanhecer">
+        </div>
+
+        <div class="field">
+          <label for="category">Categoria <span class="req">*</span></label>
+          <select id="category" name="category" required>
+            <option value="Geral">Geral</option>
+            <option>Paisagem</option><option>Retrato</option><option value="Arquitetura">Arquitectura</option>
+            <option>Cultura</option><option>Natureza</option><option>Fotografia de rua</option>
+          </select>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="province">Província <span class="req">*</span></label>
+            <select id="province" name="province" required>
+              <option value="">Escolher…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="city">Cidade / localidade <span class="req">*</span></label>
+            <input type="text" id="city" name="city" maxlength="80" required placeholder="Ex.: Vilankulo">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="description">História da imagem</label>
+          <textarea id="description" name="description" maxlength="600" placeholder="Opcional: o momento, a luz, o que te fez parar."></textarea>
+        </div>
+
+        <div class="field"><label for="mood">Ambiente</label>
+          <select id="mood"><option value="">Sem ambiente específico</option><option>Pôr do sol</option><option>Noite</option><option>Vida urbana</option><option>Serenidade</option><option>Preto e branco</option></select>
+        </div>
+        <div class="field"><label for="behindNote">Por trás desta fotografia</label>
+          <textarea id="behindNote" maxlength="1200" placeholder="O que te levou a fotografar este momento? Como conseguiste a imagem? (opcional)"></textarea>
+        </div>
+        <fieldset class="fieldset">
+          <legend>Ficha técnica <small>opcional · preenchida automaticamente quando a foto tem dados EXIF</small></legend>
+          <div class="row-2">
+            <div class="field">
+              <label for="camera">Câmara</label>
+              <input type="text" id="camera" name="camera" maxlength="80" placeholder="Ex.: Fujifilm X-T4">
+            </div>
+            <div class="field">
+              <label for="lens">Objectiva</label>
+              <input type="text" id="lens" name="lens" maxlength="80" placeholder="Ex.: 35mm f/1.4">
+            </div>
+          </div>
+          <div class="field">
+            <label for="phone">Telemóvel</label>
+            <input type="text" id="phone" name="phone" maxlength="80" placeholder="Se fotografaste com o telemóvel, ex.: iPhone 15 Pro">
+          </div>
+        </fieldset>
+
+        <div class="notice">
+          <span class="icon" data-icon="info"></span>
+          <span>A tua fotografia fica em <strong>curadoria</strong> e só aparece publicamente depois de aprovada. Removemos automaticamente a localização GPS dos metadados.</span>
+        </div>
+
+        <p class="form-error" id="error" role="alert"></p>
+        <div class="progress" hidden><span id="progressBar"></span></div>
+        <div><button class="btn" type="submit" id="submit">Enviar para curadoria</button></div>
+      </div>
+    </form>
+
+    <section class="success" id="success" hidden>
+      <span class="section-head__index">Recebida</span>
+      <h1 class="page-title">Obrigado pelo teu olhar.</h1>
+      <p class="page-sub" style="margin-inline:auto">A fotografia está na fila de curadoria. Assim que for aprovada aparece no Descobrir e no teu perfil.</p>
+      <div class="success__actions">
+        <a class="btn" id="profileLink" href="/">Ver os meus envios</a>
+        <a class="btn btn--ghost" href="/enviar">Enviar outra</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/js/enviar.js"></script>
+</body>
+</html>

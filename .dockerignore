@@ -1,0 +1,13 @@
+node_modules
+.git
+.vercel
+.env
+.env.*
+data
+uploads
+backups
+fotos*
+pinturas
+versao-antiga
+.DS_Store
+**/.DS_Store

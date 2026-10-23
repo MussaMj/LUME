@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidade — LUME</title>
+  <meta name="description" content="Histórias fotográficas e encontros da comunidade Lume em Moçambique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main class="page community-page">
+    <header class="page-head community-head">
+      <span class="eyebrow">Olhares que se encontram</span>
+      <h1 class="page-title">Comunidade</h1>
+      <p class="page-sub">Histórias e encontros para descobrir Moçambique através de quem o fotografa.</p>
+      <div class="community-actions"><a href="/descobrir" class="btn">Explorar fotografias</a><a href="/comunidade#criar" class="btn btn--ghost">Contar uma história</a></div>
+    </header>
+    <nav class="community-tabs wrap" aria-label="Explorar a comunidade">
+      <a href="/comunidade#historias">Histórias</a><a href="/comunidade#fotografos">Fotógrafos</a><a href="/comunidade#exposicoes">Exposições</a><a href="/comunidade#encontros">Encontros</a><a href="/comunidade#novidades">Novidades</a>
+    </nav>
+    <section id="communityView" class="wrap community-view" aria-live="polite"></section>
+  </main>
+
+  <script type="module" src="/js/comunidade.js"></script>
+</body>
+</html>

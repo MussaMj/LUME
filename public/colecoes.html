@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>As minhas colecções — LUME</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <span class="section-head__index">Privado</span>
+      <h1 class="page-title reveal">Colecções</h1>
+      <p class="page-sub reveal">Os teus álbuns de favoritos e tudo o que te inspirou. Só tu os vês.</p>
+      <div class="tabs" role="tablist" style="margin-bottom:0">
+        <button class="tab is-active" role="tab" data-tab="albuns" aria-selected="true">Álbuns</button>
+        <button class="tab" role="tab" data-tab="inspiradas" aria-selected="false">Inspirou-me</button>
+      </div>
+    </div>
+
+    <section id="view"></section>
+  </main>
+
+  <script type="module" src="/js/colecoes.js"></script>
+</body>
+</html>

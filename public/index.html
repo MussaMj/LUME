@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUME — O Brilho de Moçambique</title>
+  <meta name="description" content="LUME — O Brilho de Moçambique. Fotografia artística de Moçambique, de norte a sul, através dos olhares da sua comunidade.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <!-- Navegação -->
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- 1. Hero -->
+  <section class="hero" id="topo">
+    <div class="hero__media" data-parallax="0.45">
+      <img src="https://images.unsplash.com/photo-1526998758291-f87c4c1a8fff?ixlib=rb-4.1.0&auto=format&q=80&w=2400" alt="Maputo ao entardecer, vista sobre a água" fetchpriority="high">
+    </div>
+    <div class="hero__veil"></div>
+
+    <div class="hero__content">
+      <h1 class="hero__brand">
+        <span class="hero__title" data-parallax="-0.18">LUME</span>
+        <span class="hero__slogan" data-parallax="-0.1">O Brilho de Moçambique</span>
+      </h1>
+      <a class="hero__explore" href="/descobrir">Explorar Moçambique</a>
+    </div>
+
+    <div class="hero__meta">
+      <span>25°58′S · 32°34′E</span>
+      <a href="#galeria" class="scroll-cue" aria-label="Descer para a galeria">
+        <span class="scroll-cue__line"></span> Scroll
+      </a>
+    </div>
+  </section>
+
+  <!-- Manifesto -->
+  <section class="statement">
+    <p class="statement__text reveal-words">
+      Moçambique não se vê de uma vez. Revela-se em muitos olhares: nas ruas e nos mercados,
+      nas paisagens do interior, na luz do Índico e nas histórias de quem chama este país de casa.
+    </p>
+  </section>
+
+  <section class="community-intro" aria-label="Vozes da comunidade">
+    <div class="section-head"><span class="section-head__index">Comunidade</span><h2 class="section-head__title">Mais do que uma imagem.</h2><p class="section-head__sub">Conhece os fotógrafos, acompanha histórias e descobre novos olhares.</p></div>
+    <div id="communityPreview" class="community-grid wrap"></div>
+    <div class="wrap community-actions"><a href="/comunidade" class="hero__explore">Entrar na comunidade</a></div>
+  </section>
+
+  <!-- 2. Galeria dinâmica -->
+  <section class="gallery" id="galeria">
+    <div class="section-head">
+      <span class="section-head__index">01</span>
+      <h2 class="section-head__title reveal">Galeria</h2>
+      <p class="section-head__sub reveal">Um país, muitos olhares. Uma selecção de fotografias de Moçambique.</p>
+    </div>
+
+    <div class="filters" role="tablist" aria-label="Temas">
+      <button class="filter is-active" data-filter="todas" role="tab" aria-selected="true">Todas</button>
+      <button class="filter" data-filter="baixa" role="tab" aria-selected="false">Vida urbana</button>
+      <button class="filter" data-filter="costa" role="tab" aria-selected="false">A Vida na Costa</button>
+      <button class="filter" data-filter="arquitetura" role="tab" aria-selected="false">Arquitectura e Cultura</button>
+    </div>
+
+    <div class="bento" id="bento" data-layout-ready="false"></div>
+  </section>
+
+  <!-- 3. A Experiência Visual -->
+  <section class="journey" id="experiencia">
+    <div class="journey__sticky">
+      <div class="journey__head">
+        <span class="section-head__index">02</span>
+        <h2 class="journey__title">A Experiência</h2>
+        <p class="journey__sub">Da manhã à noite, um olhar sobre Moçambique. Nesta série: Maputo.</p>
+      </div>
+      <div class="journey__progress"><span id="journeyBar"></span></div>
+      <div class="journey__track" id="journeyTrack"></div>
+    </div>
+  </section>
+
+  <!-- Faixa parallax -->
+  <section class="interlude">
+    <div class="interlude__media" data-parallax="0.3">
+      <img src="https://images.unsplash.com/photo-1721011837154-82cd57a106b5?ixlib=rb-4.1.0&auto=format&q=80&w=2400" alt="A baía de Maputo com a cidade ao fundo" loading="lazy">
+    </div>
+    <blockquote class="interlude__quote reveal">
+      “Fotografar Moçambique é descobrir um novo olhar em cada lugar.”
+    </blockquote>
+  </section>
+
+  <!-- 4. Sobre / Contacto -->
+  <footer class="footer" id="sobre">
+    <div class="footer__grid">
+      <div class="footer__about">
+        <span class="section-head__index">03</span>
+        <h2 class="footer__title reveal">Sobre o projecto</h2>
+        <p class="reveal">
+          <strong>LUME</strong> é uma comunidade de fotografia dedicada a todo Moçambique, de norte a sul:
+          um arquivo vivo das suas paisagens, cidades, culturas e histórias, construído pelos olhares de quem fotografa o país.
+        </p>
+        <p class="footer__credits">
+          Fotografias de <a href="/@michael.james.khosa">Michael James Khosa</a> e selecção via <a href="https://unsplash.com/?utm_source=lume&amp;utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>.
+          Abertura: <a href="https://unsplash.com/@rofotoqoto?utm_source=lume&amp;utm_medium=referral" target="_blank" rel="noopener">Rohan Reddy</a> ·
+          Baía: <a href="https://unsplash.com/@mocream_coffee?utm_source=lume&amp;utm_medium=referral" target="_blank" rel="noopener">Omoniyi David</a> ·
+          restantes créditos em cada imagem.
+        </p>
+      </div>
+
+      <div class="footer__contact" id="contacto">
+        <h3>Colaborações &amp; Impressões</h3>
+        <p>Impressões em edição limitada, encomendas e projectos editoriais.</p>
+        <a class="footer__cta" id="contactEmail" href="#">Escrever uma mensagem <span aria-hidden="true">→</span></a>
+        <ul class="footer__social">
+          <li><a href="https://www.instagram.com/mainearqvs" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <span class="footer__mark">LUME</span>
+      <small class="footer__copy">© <span id="year">2026</span> LUME - O Brilho de Moçambique. Todos os direitos reservados.</small>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Visualizador de fotografia">
+    <button class="lightbox__close" id="lbClose" aria-label="Fechar">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" aria-label="Anterior">←</button>
+    <figure class="lightbox__figure">
+      <img id="lbImg" alt="">
+      <figcaption>
+        <span id="lbTitle"></span>
+        <span id="lbPlace"></span>
+        <a id="lbCredit" class="lightbox__credit" target="_blank" rel="noopener"></a>
+      </figcaption>
+    </figure>
+    <button class="lightbox__nav lightbox__nav--next" id="lbNext" aria-label="Seguinte">→</button>
+  </div>
+
+  <script type="module" src="/script.js"></script>
+  <script type="module" src="/js/community-preview.js"></script>
+</body>
+</html>

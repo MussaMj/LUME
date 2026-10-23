@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fotógrafo — LUME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main class="page" id="main">
+    <header class="profile" id="profile" hidden>
+      <div>
+        <span class="profile__handle" id="handle"></span>
+        <h1 class="page-title reveal" id="name"></h1>
+        <p class="profile__bio" id="bio"></p>
+        <div class="profile__links" id="links"></div>
+      </div>
+      <div>
+        <div class="profile__stats">
+          <div><span class="stat__n" id="statPhotos">0</span><span class="stat__l">Fotografias</span></div>
+          <div><span class="stat__n" id="statRegions">0</span><span class="stat__l">Províncias</span></div>
+          <div><span class="stat__n" id="statFeatured">0</span><span class="stat__l">Foto da Semana</span></div>
+        </div>
+        <div style="text-align:right;margin-top:24px" id="ownerTools" hidden>
+          <button class="btn btn--ghost btn--small" id="editToggle">Editar perfil</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="profile-edit" id="editPanel" aria-label="Editar perfil">
+      <form id="editForm" novalidate>
+        <div class="field">
+          <label for="fName">Nome</label>
+          <input type="text" id="fName" maxlength="60" required>
+        </div>
+        <div class="field">
+          <label for="fInstagram">Instagram</label>
+          <input type="text" id="fInstagram" maxlength="200" placeholder="@utilizador ou link">
+        </div>
+        <div class="field span-2">
+          <label for="fBio">Bio</label>
+          <textarea id="fBio" maxlength="400" placeholder="Duas linhas sobre o teu olhar."></textarea>
+        </div>
+        <div class="field">
+          <label for="fBehance">Behance</label>
+          <input type="text" id="fBehance" maxlength="200" placeholder="utilizador ou link">
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <p class="form-error" id="editError" role="alert"></p>
+          <div><button class="btn btn--small" type="submit">Guardar</button></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="block" id="envios" hidden>
+      <div class="section-label"><h2>Os meus envios</h2><span id="pendingInfo"></span></div>
+      <div class="wrap"><div id="mine"></div></div>
+    </section>
+
+    <section class="block" id="gallery" hidden>
+      <div class="section-label"><h2>Portefólio</h2><span id="galleryInfo"></span></div>
+      <div class="wrap"><div id="grid"></div></div>
+    </section>
+
+    <div class="not-found" id="notFound" hidden>
+      <div>
+        <h1 class="page-title">Fotógrafo não encontrado</h1>
+        <p class="page-sub" style="margin-inline:auto">Talvez o nome tenha mudado.</p>
+        <p style="margin-top:28px"><a class="btn" href="/descobrir">Descobrir</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="/js/perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+.skeleton-grid { width:100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; padding-block:12px; }
+.skeleton-card { min-width:0; }
+.skeleton-block, .skeleton-line, .editorial-skeleton { background:#242422; border-radius:8px; animation:skeleton-pulse 1.4s ease-in-out infinite alternate; }
+.skeleton-line { height:12px; margin-top:14px; width:80%; }
+.skeleton-line--short { width:45%; margin-top:8px; }
+.editorial-skeleton { grid-row:span 4; min-height:260px; grid-column:span 4; }
+@keyframes skeleton-pulse { to { opacity:.45; } }
+@keyframes social-pulse { 45% { transform:scale(1.28); } }
+.is-pulsing .icon { animation:social-pulse .34s ease-out; }
+.pin__inspire-count { font-size:.7rem; font-variant-numeric:tabular-nums; }
+.cinema__related { border-top:1px solid var(--line); padding-top:20px; }
+.cinema__related h3 { font-size:.85rem; margin-bottom:12px; font-weight:400; }
+.cinema__related-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.cinema__related-grid button { border-radius:6px; overflow:hidden; aspect-ratio:1; background:#242422; }
+.cinema__related-grid img { width:100%; height:100%; object-fit:cover; transition:transform .25s; }
+.cinema__related-grid button:hover img { transform:scale(1.05); }
+.cinema__related-grid button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+body .map-tip { box-sizing:border-box; color:var(--text); width:210px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#171715; box-shadow:0 12px 32px #0006; white-space:normal; pointer-events:none; }
+.map-tip img { width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:8px; }
+.map-tip strong, .map-tip small { display:block; margin-top:4px; }
+.map-tip small { color:var(--muted); font-size:.72rem; }
+@media(max-width:700px) { .skeleton-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } .editorial-skeleton { grid-column:span 6; min-height:200px; } }
+@media(prefers-reduced-motion:reduce) { .skeleton-block,.skeleton-line,.editorial-skeleton,.is-pulsing .icon { animation:none; } .cinema__related-grid img { transition:none; } }
+
+.pin__inspire { display:flex; flex-direction:column; align-items:center; gap:4px; }
+
+@media (prefers-reduced-motion:reduce) {
+  .pin, .pin__open img, .tile { transition:none !important; transform:none !important; }
+}

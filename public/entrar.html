@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar — LUME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/community.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/interactions.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo" aria-label="LUME, início">LUME</a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal" hidden></nav>
+    <button class="nav__toggle" id="navToggle" aria-controls="navLinks" hidden disabled aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main class="auth">
+    <figure class="auth__media">
+      <img id="authImg" alt="">
+      <figcaption id="authCaption"></figcaption>
+    </figure>
+
+    <section class="auth__panel">
+      <span class="section-head__index">Comunidade LUME</span>
+      <h1 class="page-title" style="font-size:clamp(2.6rem,5vw,4.4rem);margin-top:12px">Moçambique<br>pelo teu olhar.</h1>
+
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" role="tab" aria-selected="true" data-tab="login">Entrar</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="register">Criar conta</button>
+      </div>
+
+      <form class="form-stack" id="login" novalidate>
+        <div class="field">
+          <label for="loginId">Utilizador ou email</label>
+          <input type="text" id="loginId" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="loginPw">Palavra-passe</label>
+          <input type="password" id="loginPw" autocomplete="current-password" required>
+        </div>
+        <p class="form-error" role="alert"></p>
+        <div><button class="btn" type="submit">Entrar</button></div>
+      </form>
+
+      <form class="form-stack" id="register" novalidate hidden>
+        <div class="field">
+          <label for="regName">Nome</label>
+          <input type="text" id="regName" autocomplete="name" maxlength="60" required placeholder="Como queres ser creditado">
+        </div>
+        <div class="field">
+          <label for="regUser">Nome de utilizador</label>
+          <input type="text" id="regUser" autocomplete="username" maxlength="30" required placeholder="ex.: olhares.de.mocambique">
+          <span class="hint" id="regUserHint">O teu perfil: /@…</span>
+        </div>
+        <div class="field">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" autocomplete="email" maxlength="120" required>
+        </div>
+        <div class="field">
+          <label for="regPw">Palavra-passe</label>
+          <input type="password" id="regPw" autocomplete="new-password" minlength="8" required placeholder="Mínimo 8 caracteres">
+        </div>
+        <p class="form-error" role="alert"></p>
+        <div><button class="btn" type="submit">Criar conta</button></div>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="/js/entrar.js"></script>
+</body>
+</html>
