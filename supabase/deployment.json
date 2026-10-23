@@ -2,5 +2,6 @@
   "projectRef": "ikwdegtaawgjkrhomvlk",
   "projectUrl": "https://ikwdegtaawgjkrhomvlk.supabase.co",
   "backendUrl": "https://ikwdegtaawgjkrhomvlk.supabase.co/functions/v1/lume-api",
-  "storageBucket": "lume-uploads"
+  "storageBucket": "lume-uploads",
+  "frontendUrl": "https://lume-rosy-three.vercel.app"
 }

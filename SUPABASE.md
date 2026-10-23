@@ -2,6 +2,7 @@
 
 O backend foi migrado para o projecto **Lume**, referência pública `ikwdegtaawgjkrhomvlk`.
 
+- Site: **https://lume-rosy-three.vercel.app**
 - API: `https://ikwdegtaawgjkrhomvlk.supabase.co/functions/v1/lume-api`
 - Saúde: `https://ikwdegtaawgjkrhomvlk.supabase.co/functions/v1/lume-api/api/health`
 - PostgreSQL: esquema privado `lume`, RLS activa e sem permissões para `anon`/`authenticated`.
@@ -26,7 +27,7 @@ Usar Framework **Other**, Node **24.x**, comando `npm run build:vercel` e nenhum
 Em **Supabase → Project Settings → Edge Functions → Secrets**, configurar:
 
 ```dotenv
-APP_URL=https://URL-REAL-DO-SITE.vercel.app
+APP_URL=https://lume-rosy-three.vercel.app
 BETA_EMAILS=email-real-do-primeiro-testador,email-real-do-segundo-testador
 SMTP_HOST=hostname-do-fornecedor
 SMTP_PORT=465
@@ -35,7 +36,7 @@ SMTP_PASS=configurar-no-painel
 MAIL_FROM=Lume <remetente-autorizado@dominio-real>
 ```
 
-Os valores acima são exemplos a substituir, não endereços prontos para usar. `APP_URL` deve ser o URL **do frontend**, sem caminhos. Actualmente está limitado à origem da API para os testes técnicos; pedidos de escrita do frontend ficam bloqueados até esta variável ser corrigida. A lista inicial de convites está restrita ao e-mail administrativo reservado. Para convidar pessoas, adicionar os endereços reais a `BETA_EMAILS`.
+Os valores acima são exemplos a substituir, não endereços prontos para usar. `APP_URL` deve ser o URL **do frontend**, sem caminhos. Este endereço já foi configurado no Supabase e a comunicação através da Vercel foi verificada. Se o domínio mudar, actualizar esta variável antes de partilhar o novo URL. A lista inicial de convites está restrita ao e-mail administrativo reservado. Para convidar pessoas, adicionar os endereços reais a `BETA_EMAILS`.
 
 As Edge Functions bloqueiam as portas SMTP 25 e 587. Usar SMTP com TLS na porta **465** ou adaptar o envio para um fornecedor HTTP. Não copiar a configuração 587 da alternativa Docker. É necessário confirmar a entrega real antes de abrir novos registos: sem o fornecedor de e-mail, os pedidos ficam na fila e os utilizadores não conseguem confirmar/recuperar a conta.
 
