@@ -23,12 +23,20 @@
     "catalog:export": "node scripts/export-catalog.js",
     "catalog:import": "node --env-file-if-exists=.env scripts/import-catalog.js",
     "profile:assign": "node --env-file-if-exists=.env scripts/assign-profile-email.js",
-    "check:production": "node --env-file-if-exists=.env scripts/check-production.js"
+    "check:production": "node --env-file-if-exists=.env scripts/check-production.js",
+    "build:supabase": "node scripts/build-supabase.js",
+    "supabase:schema": "node scripts/supabase-schema.js"
   },
   "dependencies": {
     "express": "^5.2.1",
     "image-size": "^2.0.4",
     "multer": "^2.4.0",
     "nodemailer": "^10.1.1"
+  },
+  "devDependencies": {
+    "@babel/generator": "^8.0.6",
+    "@babel/parser": "^8.0.8",
+    "@babel/traverse": "^8.0.7",
+    "@babel/types": "^8.0.8"
   }
 }

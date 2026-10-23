@@ -1,4 +1,7 @@
-# Publicação da versão de testes
+# Alternativa: backend Docker persistente
+
+**A configuração actual usa Supabase. Consulta [SUPABASE.md](SUPABASE.md).** Este documento mantém a alternativa Express/SQLite num servidor persistente para quem a escolher explicitamente.
+
 
 ## Arquitectura preparada
 

@@ -12,8 +12,10 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - run: npm run build:supabase
+      - run: git diff --exit-code -- supabase/functions/lume-api/_server
       - run: npm test
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run build:vercel
         env:
-          BACKEND_ORIGIN: https://backend.example.test
+          BACKEND_ORIGIN: https://ikwdegtaawgjkrhomvlk.supabase.co/functions/v1/lume-api

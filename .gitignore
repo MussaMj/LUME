@@ -16,3 +16,5 @@ pinturas/
 versao-antiga/
 *.log
 coverage/
+supabase/.temp/
+supabase/.branches/

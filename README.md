@@ -1,5 +1,8 @@
 # LUME — O Brilho de Moçambique
 
+**Publicação actual: Vercel + Supabase.** Segue [SUPABASE.md](SUPABASE.md) para o backend já publicado, configuração do site e e-mails. O modo Express/SQLite continua disponível para desenvolvimento local.
+
+
 Plataforma colaborativa de fotografia artística de Moçambique. A homepage parallax (`public/index.html`) partilha a navbar e a sessão com a comunidade, que inclui envios
 moderados, perfis, mapa por província, feed Masonry, inspirações, álbuns privados e Foto da Semana.
 
@@ -97,7 +100,7 @@ fica no topo de `/descobrir`, em ecrã inteiro.
 
 ## Publicação da versão de testes
 
-Segue [DEPLOYMENT.md](DEPLOYMENT.md) para GitHub, Vercel, backend persistente, SMTP, convites e restauro. A Vercel publica o frontend e encaminha pedidos para o backend; não executa o SQLite.
+Segue [SUPABASE.md](SUPABASE.md) para a publicação actual Vercel + Supabase. [DEPLOYMENT.md](DEPLOYMENT.md) descreve a alternativa anterior com um servidor Docker persistente.
 
 ## Antes de pôr em produção
 

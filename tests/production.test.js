@@ -75,7 +75,7 @@ test('backup has a consistent SQLite snapshot and a verifiable integrity manifes
 });
 
 test('Vercel build refuses missing backend and produces static/proxy routes without private database files',()=>{
- const invalid=spawnSync(process.execPath,['scripts/build-vercel.js'],{env:{...process.env,BACKEND_ORIGIN:''},encoding:'utf8'});assert.notEqual(invalid.status,0);
+ const invalid=spawnSync(process.execPath,['scripts/build-vercel.js'],{env:{...process.env,BACKEND_ORIGIN:'',LUME_IGNORE_DEPLOYMENT_CONFIG:'1'},encoding:'utf8'});assert.notEqual(invalid.status,0);
  assert.match(invalid.stderr,/Falta a variável BACKEND_ORIGIN/);assert.doesNotMatch(invalid.stderr,/TypeError|ERR_INVALID_URL/);
  for(const value of ['invalid','https://localhost','https://frontend.example.test']) {
   const rejected=spawnSync(process.execPath,['scripts/build-vercel.js'],{env:{...process.env,BACKEND_ORIGIN:value,VERCEL_URL:'frontend.example.test'},encoding:'utf8'});

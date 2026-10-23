@@ -60,6 +60,7 @@ api.use(errorHandler);
 app.use('/api', api);
 
 /* ---------- Ficheiros enviados: pendentes só para o autor e admins ---------- */
+app.use('/media',(_req,res,next)=>{res.set('Cache-Control','private, no-store');res.vary('Cookie');next();});
 app.get('/media/:file', (req, res) => {
   const url = `/media/${path.basename(req.params.file)}`;
   const photo = db.prepare('SELECT user_id, status FROM photos WHERE src = ? OR thumb = ? LIMIT 1').get(url, url);

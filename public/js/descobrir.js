@@ -285,7 +285,8 @@ function scheduleRefresh() {
 }
 const live = getLiveEvents();
 live.addEventListener('photos', scheduleRefresh);
-live.addEventListener('open', scheduleRefresh);
+let firstConnection=true;
+live.addEventListener('open',()=>{if(firstConnection){firstConnection=false;scheduleRefresh();}});
 window.addEventListener('focus', scheduleRefresh);
 
 loadFeatured().catch((err) => toast(err.message, { error: true }));

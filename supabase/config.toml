@@ -1,0 +1,4 @@
+project_id = "Lume"
+[functions.lume-api]
+verify_jwt = false
+entrypoint = "./functions/lume-api/index.ts"
