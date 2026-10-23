@@ -1,6 +1,5 @@
 import { showSkeleton } from './skeleton.js';
-import { h, icon, initials } from './core.js';
-import { toggleInspired } from './cinema.js';
+import { h, icon, initials, toast, loadCinema } from './core.js';
 
 /*
  * Grelha Masonry estilo Pinterest.
@@ -56,7 +55,7 @@ export function createMasonry(container, { onOpen, cardExtras, minColumn = 260 }
       dataset: { inspire: photo.id },
       onclick: (e) => {
         e.stopPropagation();
-        toggleInspired(photo);
+        loadCinema().then(cinema => cinema.toggleInspired(photo)).catch(err => toast(err.message, { error: true }));
       },
     }, icon('inspired'), h('span', { class: 'pin__inspire-count', dataset: { inspireCount: photo.id } }, String(photo.inspiredCount || 0)));
 

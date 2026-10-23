@@ -1,18 +1,20 @@
-import { getLiveEvents, $, api, h, initNav, initParallax, PROVINCES, reveal, toast, requireLogin } from './core.js';
+import { loadCinema, cinemaLoaded, getLiveEvents, $, api, h, initNav, initParallax, PROVINCES, reveal, toast, requireLogin } from './core.js';
 import { createMasonry } from './masonry.js';
-import { openCinema } from './cinema.js';
+const openCinema = (...args) => loadCinema().then(cinema => cinema.openCinema(...args)).catch(err => toast(err.message, { error: true }));
 
 initNav('descobrir');
 initParallax();
 reveal();
 
 const params = new URLSearchParams(location.search);
+if (params.has('foto')) void loadCinema().catch(err => toast(err.message, { error: true }));
 const state = {
   province: PROVINCES.some((p) => p.id === params.get('provincia')) ? params.get('provincia') : '',
   category: params.get('category') || '', mood: params.get('mood') || '', following: params.get('following') === '1',
   page: 0,
   hasMore: true,
   loading: false,
+  pageSize: 12,
   // A mistura muda a cada visita, mas mantém-se estável durante a sessão
   seed: Number(sessionStorage.getItem('lume-seed')) || (() => {
     const s = Math.floor(Math.random() * 1e6) + 1;
@@ -33,6 +35,8 @@ async function loadFeatured() {
     $('#featured').classList.add('featured--empty');
     $('#featuredOpen').hidden = true;
     $('#featuredImg').removeAttribute('src');
+    $('#featuredImg').removeAttribute('srcset');
+    $('#featuredMobile').removeAttribute('srcset');
     $('#featuredTitle').textContent = '';
     $('#featuredBy').replaceChildren();
     $('#featuredNote').textContent = '';
@@ -48,7 +52,10 @@ async function loadFeatured() {
     img.srcset = `${photo.thumb} 640w, ${photo.src} ${photo.width}w`;
     img.sizes = '(max-width: 700px) 100vw, 65vw';
   } else { img.removeAttribute('srcset'); img.removeAttribute('sizes'); }
+  // A mobile source overrides DPR-driven selection of the large desktop file.
+  $('#featuredMobile').srcset = photo.thumb;
   img.src = photo.src;
+  if (img.complete && img.naturalWidth) img.classList.add('is-loaded');
   img.alt = `${photo.title}, ${photo.city}`;
   $('#featuredTitle').textContent = photo.title;
   $('#featuredBy').replaceChildren('por ', h('a', { href: `/@${photo.author.username}` }, photo.author.displayName),
@@ -197,7 +204,7 @@ async function loadMore() {
   state.loading = true;
   masonry.setLoading(true);
   let loaded = false;
-  const q = new URLSearchParams({ page: state.page, seed: state.seed, limit: 24 });
+  const q = new URLSearchParams({ page: state.page, seed: state.seed, limit: state.pageSize });
   if (state.province) q.set('province', state.province);
   try {
     if (state.category) q.set('category', state.category);
@@ -292,6 +299,14 @@ const initialFeed = loadMore();
 initialFeed.then(() => {
   const live = getLiveEvents();
   live.addEventListener('photos', scheduleRefresh);
+  live.addEventListener('engagement', event => {
+    if (cinemaLoaded) return; // The loaded Cinema also handles optimistic updates.
+    try {
+      const {photoId, inspiredCount, savedCount} = JSON.parse(event.data);
+      document.querySelectorAll(`[data-inspire-count="${photoId}"]`).forEach(node => { node.textContent = String(inspiredCount || 0); });
+      masonry.photos.filter(photo => photo.id === photoId).forEach(photo => { photo.inspiredCount = inspiredCount || 0; photo.savedCount = savedCount || 0; });
+    } catch { /* Ignore malformed event payloads. */ }
+  });
   return buildMap();
 }).catch((err) => toast(err.message, { error: true }));
 window.addEventListener('focus', scheduleRefresh);

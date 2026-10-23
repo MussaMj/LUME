@@ -7,6 +7,16 @@ export { safeNext, loginDestination };
    (partilhado também pela homepage)
    ========================================================== */
 
+// Keep the photo viewer out of the initial gallery dependency graph.
+let cinemaPromise;
+export let cinemaLoaded = false;
+export function loadCinema() {
+  return cinemaPromise ||= import('./cinema.js').then(module => {
+    cinemaLoaded = true;
+    return module;
+  }).catch(err => { cinemaPromise = null; throw err; });
+}
+
 /* ---------- API ---------- */
 export async function api(path, { method = 'GET', body, form, signal } = {}) {
   const opts = { method, headers: {}, credentials: 'same-origin', signal };

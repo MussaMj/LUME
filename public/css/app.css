@@ -572,3 +572,10 @@ input::placeholder, textarea::placeholder { color: rgba(143, 138, 130, 0.6); }
 .pin__author { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
 .pin__author:hover { color: var(--text); }
 .pin__avatar { flex: none; display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--line); border-radius: 50%; font-family: var(--font-display); font-size: .6rem; }
+
+/* Keep the first mobile photograph visible promptly after decoding. */
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  .featured__media img { transition-duration: .3s; }
+  .pin { transition-duration: .3s; }
+  .pin__open img { transition-duration: .25s; }
+}

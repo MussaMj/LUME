@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Descobrir Moçambique — LUME</title>
   <meta name="description" content="Fotografia artística de todas as províncias de Moçambique, feita pela comunidade LUME.">
+  <link rel="modulepreload" href="/js/core.js">
+  <link rel="modulepreload" href="/js/masonry.js">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -25,7 +27,7 @@
   <!-- Foto da Semana: parallax máximo -->
   <section class="featured" id="featured" aria-label="Foto da Semana">
     <div class="featured__media" data-parallax="0.6" data-parallax-scale="0.12">
-      <img id="featuredImg" alt="">
+      <picture><source id="featuredMobile" media="(max-width: 700px)"><img id="featuredImg" alt="" fetchpriority="high" decoding="async"></picture>
     </div>
     <div class="featured__veil"></div>
     <div class="featured__content">
