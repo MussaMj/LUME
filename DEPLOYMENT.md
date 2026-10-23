@@ -40,7 +40,6 @@ UPLOAD_DIR=/var/lib/lume/uploads
 BACKUP_DIR=/var/lib/lume/backups
 TRUST_PROXY=1
 REQUIRE_EMAIL_VERIFICATION=true
-BETA_EMAILS=primeiro-convidado@exemplo.com,segundo-convidado@exemplo.com
 MAIL_FROM=Lume <fotografia@teu-dominio.com>
 SMTP_HOST=smtp.teu-fornecedor.com
 SMTP_PORT=587
@@ -92,13 +91,13 @@ Após mudar o domínio, actualizar `APP_URL` no backend, reiniciar e voltar a te
 ## 4. Antes de convidar os testadores
 
 1. Confirmar que GitHub Actions passou e que `/api/health` responde através do domínio da Vercel.
-2. Registar um endereço de `BETA_EMAILS`; confirmar a recepção real do e-mail e abrir o link. Um endereço fora da lista deve ser rejeitado.
+2. Registar uma conta com qualquer endereço válido. Com `REQUIRE_EMAIL_VERIFICATION=true`, confirmar a entrega real e abrir o link; com `false`, verificar a entrada imediata.
 3. Entrar, sair e recuperar a palavra-passe. O link usado não pode ser reutilizado; a alteração deve terminar as sessões anteriores.
 4. Enviar uma foto; verificar privacidade enquanto pendente, recepção do aviso administrativo e recepção da aprovação pelo autor.
 5. Testar perfil, álbuns, Cinema, mapa e menu em PC, Android e Safari/iPhone reais. A animação e a rotação física têm limitações próprias dos browsers.
 6. Reiniciar e voltar a fazer deploy do backend: a foto, o álbum e a conta têm de continuar presentes.
 7. Criar e verificar um backup, restaurá-lo num ambiente isolado e confirmar contagens e ficheiros. Configurar alertas de indisponibilidade para `/api/health`, de falhas SMTP/backup e de disco cheio no fornecedor.
-8. Só depois partilhar o URL HTTPS da Vercel com os convidados. Os registos são privados por convite; as fotografias aprovadas continuam públicas.
+8. Partilhar o URL HTTPS da Vercel. Os registos e as fotografias aprovadas são públicos.
 
 ## 5. Backups e restauro
 

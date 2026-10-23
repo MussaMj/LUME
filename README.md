@@ -25,7 +25,7 @@ visitantes vão para `/entrar?next=...&notice=admin-login`; utilizadores comuns
 regressam ao início com **Acesso Negado**. A API devolve 403.
 O HTML administrativo está fora da pasta pública.
 
-A confirmação de e-mail é obrigatória em produção. O endereço administrativo continua
+O registo é público e permite entrada imediata com `REQUIRE_EMAIL_VERIFICATION=false`. A confirmação pode ser activada após configurar o envio de e-mail. O endereço administrativo continua
 reservado no registo público. Para criar a conta, executa no servidor (sem expor a palavra-passe
 nos argumentos nem a guardar em ficheiros versionados):
 
@@ -107,7 +107,7 @@ Segue [SUPABASE.md](SUPABASE.md) para a publicação actual Vercel + Supabase. [
 - `NODE_ENV=production` (cookies `Secure`) atrás de HTTPS.
 - Guarda `data/` e `uploads/` num volume persistente com cópias de segurança. Para escalar,
   muda `uploads/` para armazenamento de objetos (S3, R2…).
-- Recuperação de palavra-passe e confirmação de e-mail implementadas; testar entrega SMTP real antes dos convites.
+- Recuperação de palavra-passe e confirmação de e-mail implementadas; a entrega depende da configuração SMTP.
 - Os limites de pedidos persistem no SQLite. Esta beta usa uma instância; várias réplicas exigem outra estratégia de dados/eventos.
 - As fotografias iniciais (homepage e `scripts/seed.js`) são fotografias reais de Moçambique
   do Unsplash, servidas a partir do CDN do Unsplash e creditadas aos autores. A palavra-passe
@@ -267,6 +267,6 @@ O Cinema consulta sugestões aprovadas do mesmo fotógrafo (ou da província qua
 
 ### Segurança e operação da beta
 
-A configuração de produção exige HTTPS, caminhos persistentes, SMTP e uma lista `BETA_EMAILS`. A criação de contas é limitada aos convidados. A recuperação de palavra-passe revoga as sessões existentes e utiliza links de uso único. `npm run check:production` valida a configuração e a ligação SMTP, sem enviar mensagens. `npm run backup` cria um snapshot privado; `backup:verify` verifica a integridade. Os backups locais devem também ser copiados para armazenamento externo cifrado.
+A configuração de produção exige HTTPS e armazenamento persistente. A criação de contas é pública, sem convites. A confirmação de e-mail é configurável; SMTP é necessário para confirmação, recuperação e notificações. A recuperação de palavra-passe revoga as sessões existentes e utiliza links de uso único. `npm run check:production` valida a configuração e a ligação SMTP, sem enviar mensagens. `npm run backup` cria um snapshot privado; `backup:verify` verifica a integridade. Os backups locais devem também ser copiados para armazenamento externo cifrado.
 
 Os novos limites de upload são 6 MB por ficheiro, 40 megapixels, dois envios simultâneos, 20 pedidos por conta/dia e 500 MB de uploads por conta. Fotos e uploads privados não fazem parte do repositório. O catálogo de lançamento contém apenas fotografias aprovadas, sem palavras-passe, sessões ou e-mails privados. As configurações de publicação e os testes não alteram o Hero.

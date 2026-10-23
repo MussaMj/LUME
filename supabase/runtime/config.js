@@ -1,6 +1,6 @@
 import process from 'node:process';
 export const production=true;
-export const verifyEmails=true;
+export const verifyEmails=process.env.REQUIRE_EMAIL_VERIFICATION !== 'false';
 export function validateConfig() {}
 export const allowedOrigins=()=>new Set([process.env.APP_URL,...(process.env.ALLOWED_ORIGINS || '').split(',')].map(value=>value?.trim()).filter(Boolean).map(value=>new URL(value).origin));
 

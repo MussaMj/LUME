@@ -22,8 +22,6 @@ router.post('/register', limiter, (req, res) => {
   const email = text(req.body.email, { max: 120, required: true, label: 'Email' }).toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'Email inválido.');
   if (email === ADMIN_EMAIL) throw new HttpError(403, 'Este endereço está reservado. A conta administrativa deve ser criada pelo responsável no servidor.');
-  const beta = (process.env.BETA_EMAILS || '').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
-  if(beta.length && !beta.includes(email))throw new HttpError(403,'Os registos estão limitados aos convidados desta fase de testes.');
   const password = String(req.body.password ?? '');
   if(password.length > 128)throw new HttpError(400,'A palavra-passe deve ter até 128 caracteres.');
   if (password.length < 8) throw new HttpError(400, 'A palavra-passe precisa de pelo menos 8 caracteres.');

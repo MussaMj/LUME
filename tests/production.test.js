@@ -24,9 +24,11 @@ before(async()=>{
 });
 after(async()=>{if(child?.exitCode===null){child.kill();await once(child,'exit');}db.close();rmSync(temp,{recursive:true,force:true});});
 
-test('private beta registration requires an invitation and verified email before login',async()=>{
+test('public registration accepts any email and supports optional email verification',async()=>{
  const body={username:'invited',displayName:'Invited',email:'invited@example.test',password:'initial-test-password'};
- assert.equal((await request('/api/auth/register',{body:{...body,email:'outside@example.test'}})).status,403);
+ const publicAccount=await request('/api/auth/register',{body:{...body,username:'outside',email:'outside@example.test'}});
+ assert.equal(publicAccount.status,201);assert.equal(publicAccount.data.verificationRequired,true);
+ assert.equal((await request('/api/auth/verify-email',{body:{token:token('verify')}})).status,200);
  const registered=await request('/api/auth/register',{body});assert.equal(registered.status,201);assert.equal(registered.data.verificationRequired,true);assert.equal(registered.cookie,undefined);
  assert.equal((await request('/api/auth/login',{body:{login:'invited',password:body.password}})).status,403);
  const verification=token('verify');assert.equal(verification.length,64);
@@ -93,10 +95,10 @@ test('production configuration fails closed for ephemeral Vercel or incomplete d
  const run=overrides=>spawnSync(process.execPath,['--input-type=module','-e',code],{env:{...process.env,NODE_ENV:'production',APP_URL:'https://lume.example.test',DB_PATH:'/persistent/db',UPLOAD_DIR:'/persistent/uploads',BACKUP_DIR:'/persistent/backups',SMTP_HOST:'smtp.example.test',MAIL_FROM:'Lume <lume@example.test>',BETA_EMAILS:'tester@example.test',...overrides},encoding:'utf8'});
  assert.equal(run({}).status,0);
  assert.notEqual(run({APP_URL:'http://insecure.example.test'}).status,0);
- assert.notEqual(run({BETA_EMAILS:''}).status,0);
- assert.notEqual(run({BETA_EMAILS:' , '}).status,0);
+ assert.equal(run({BETA_EMAILS:''}).status,0);
+ assert.equal(run({BETA_EMAILS:' , '}).status,0);
  assert.notEqual(run({DB_PATH:''}).status,0);
- assert.notEqual(run({REQUIRE_EMAIL_VERIFICATION:'false'}).status,0);
+ assert.equal(run({REQUIRE_EMAIL_VERIFICATION:'false',SMTP_HOST:'',MAIL_FROM:''}).status,0);
  assert.notEqual(run({VERCEL:'1'}).status,0);
 });
 

@@ -28,7 +28,7 @@ Em **Supabase → Project Settings → Edge Functions → Secrets**, configurar:
 
 ```dotenv
 APP_URL=https://lume-rosy-three.vercel.app
-BETA_EMAILS=email-real-do-primeiro-testador,email-real-do-segundo-testador
+REQUIRE_EMAIL_VERIFICATION=false
 SMTP_HOST=hostname-do-fornecedor
 SMTP_PORT=465
 SMTP_USER=configurar-no-painel
@@ -36,9 +36,9 @@ SMTP_PASS=configurar-no-painel
 MAIL_FROM=Lume <remetente-autorizado@dominio-real>
 ```
 
-Os valores acima são exemplos a substituir, não endereços prontos para usar. `APP_URL` deve ser o URL **do frontend**, sem caminhos. Este endereço já foi configurado no Supabase e a comunicação através da Vercel foi verificada. Se o domínio mudar, actualizar esta variável antes de partilhar o novo URL. A lista inicial de convites está restrita ao e-mail administrativo reservado. Para convidar pessoas, adicionar os endereços reais a `BETA_EMAILS`.
+Os valores acima são exemplos a substituir, não endereços prontos para usar. `APP_URL` deve ser o URL **do frontend**, sem caminhos. Este endereço já foi configurado no Supabase e a comunicação através da Vercel foi verificada. Se o domínio mudar, actualizar esta variável antes de partilhar o novo URL. O registo é público, sem lista de convidados. `REQUIRE_EMAIL_VERIFICATION=false` permite criar conta e entrar imediatamente; o endereço fornecido não fica confirmado. Para exigir confirmação no futuro, configurar e testar o envio e definir esta variável como `true`.
 
-As Edge Functions bloqueiam as portas SMTP 25 e 587. Usar SMTP com TLS na porta **465** ou adaptar o envio para um fornecedor HTTP. Não copiar a configuração 587 da alternativa Docker. É necessário confirmar a entrega real antes de abrir novos registos: sem o fornecedor de e-mail, os pedidos ficam na fila e os utilizadores não conseguem confirmar/recuperar a conta.
+As Edge Functions bloqueiam as portas SMTP 25 e 587. Usar SMTP com TLS na porta **465** ou adaptar o envio para um fornecedor HTTP. Não copiar a configuração 587 da alternativa Docker. Sem fornecedor de e-mail, os novos registos e o login funcionam com a confirmação desactivada, mas a recuperação de palavra-passe e as notificações por e-mail não são entregues.
 
 O endpoint de saúde informa `emailConfigured` e `frontendConfigured` sem revelar segredos. Estes indicadores verificam presença de configuração, não substituem um teste real de entrega ou de navegação.
 
@@ -67,7 +67,7 @@ O script `supabase-schema.js` gera apenas o esquema, sem dados. `supabase-data.j
 
 ## Validação antes de partilhar
 
-1. Confirmar `APP_URL`, convites e fornecedor de e-mail.
+1. Confirmar `APP_URL` e registo público; configurar o fornecedor para funcionalidades por e-mail.
 2. Novo deploy Vercel com o commit mais recente; testar `/api/health` no domínio da Vercel.
 3. Confirmar cookies Secure/HttpOnly, login/logout, confirmação de e-mail e recuperação real.
 4. Enviar uma foto pendente: terceiros não a devem conseguir abrir. Aprovar e verificar galeria e e-mail do autor.
