@@ -53,7 +53,7 @@ export async function shapePhoto(row, viewer) {
       phone: row.phone
     },
     src: row.src,
-    thumb: row.thumb,
+    thumb: /^\/photos\/[^?]+-thumb\.jpg$/.test(row.thumb) ? row.thumb.replace(/\.jpg$/, '.webp') : row.thumb,
     width: row.width,
     height: row.height,
     createdAt: row.created_at,
@@ -73,13 +73,22 @@ export async function shapePhoto(row, viewer) {
   };
   if (viewer?.role === 'admin') photo.author.email = row.author_email;
   if (viewer) {
-    photo.inspired = !!(await db.prepare('SELECT 1 FROM inspired WHERE user_id = ? AND photo_id = ?').get(viewer.id, row.id));
+    photo.inspired = row.viewer_inspired !== undefined ? !!row.viewer_inspired : !!(await db.prepare('SELECT 1 FROM inspired WHERE user_id = ? AND photo_id = ?').get(viewer.id, row.id));
   }
   if (viewer && (viewer.username === row.username || viewer.role === 'admin')) {
     photo.status = row.status;
     photo.rejectReason = row.reject_reason;
   }
   return photo;
+}
+export async function shapePhotos(rows, viewer) {
+  if (!viewer || !rows.length) return await Promise.all(rows.map(async row => await shapePhoto(row, viewer)));
+  const likes = await db.prepare('SELECT photo_id FROM inspired WHERE user_id=? AND photo_id IN (' + rows.map(() => '?').join(',') + ')').all(viewer.id, ...rows.map(row => row.id));
+  const ids = new Set(likes.map(row => row.photo_id));
+  return await Promise.all(rows.map(async row => await shapePhoto({
+    ...row,
+    viewer_inspired: ids.has(row.id)
+  }, viewer)));
 }
 export const publicUser = u => u && {
   username: u.username,

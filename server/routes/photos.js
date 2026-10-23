@@ -11,7 +11,7 @@ import { queueUploadEmail, flushMailQueue } from '../mail.js';
 import { photosChanged, engagementChanged } from '../events.js';
 import { requireUser } from '../auth.js';
 import { PROVINCE_IDS } from '../provinces.js';
-import { HttpError, shapePhoto, text } from '../util.js';
+import { HttpError, shapePhoto, shapePhotos, text } from '../util.js';
 
 export const UPLOAD_DIR = process.env.UPLOAD_DIR || path.resolve(import.meta.dirname, '..', '..', 'uploads');
 mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -61,7 +61,7 @@ router.get('/', (req, res) => {
   const rows = db.prepare(`${PHOTO_SELECT} WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ? OFFSET ?`)
     .all(...params, ...(req.query.sort === 'popular' || req.query.sort === 'recent' ? [] : [seed]), limit + 1, page * limit);
   res.json({
-    photos: rows.slice(0, limit).map((r) => shapePhoto(r, req.user)),
+    photos: shapePhotos(rows.slice(0, limit), req.user),
     hasMore: rows.length > limit,
   });
 });
@@ -82,8 +82,8 @@ router.get('/map-preview', (req, res) => {
   const rows = db.prepare(`SELECT province, COUNT(*) AS total, (SELECT p2.id FROM photos p2
     WHERE p2.province=p.province AND p2.status='approved' ORDER BY p2.created_at DESC,p2.id DESC LIMIT 1) AS photo_id
     FROM photos p WHERE status='approved' GROUP BY province`).all();
-  res.json({ provinces: Object.fromEntries(rows.map(r => [r.province, { total:r.total,
-    photo:shapePhoto(db.prepare(`${PHOTO_SELECT} WHERE p.id=?`).get(r.photo_id), req.user) }])) });
+  const photos = rows.length ? shapePhotos(db.prepare(`${PHOTO_SELECT} WHERE p.id IN (${rows.map(() => '?').join(',')})`).all(...rows.map(row => row.photo_id)), req.user) : [];
+  res.json({ provinces: Object.fromEntries(rows.map(row => [row.province, { total: row.total, photo: photos.find(photo => photo.id === row.photo_id) }])) });
 });
 
 router.get('/:id/related', (req, res) => {

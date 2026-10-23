@@ -4,13 +4,13 @@ import { Buffer } from 'node:buffer';
 import { Router } from "npm:express@5.2.1";
 import { db, PHOTO_SELECT } from '../db.js';
 import { requireUser } from '../auth.js';
-import { HttpError, publicUser, shapePhoto } from '../util.js';
+import { HttpError, publicUser, shapePhotos } from '../util.js';
 export const users = Router();
 export const me = Router();
 users.get('/:username', async (req, res) => {
   const user = await db.prepare('SELECT * FROM users WHERE username = ?').get(req.params.username);
   if (!user) throw new HttpError(404, 'Fotógrafo não encontrado.');
-  const photos = await Promise.all((await db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? AND p.status = 'approved' ORDER BY p.created_at DESC, p.id DESC`).all(user.id)).map(async r => await shapePhoto(r, req.user)));
+  const photos = await shapePhotos(await db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? AND p.status = 'approved' ORDER BY p.created_at DESC, p.id DESC`).all(user.id), req.user);
   const {
     email,
     role,
@@ -34,7 +34,7 @@ users.get('/:username', async (req, res) => {
 me.get('/photos', requireUser, async (req, res) => {
   const rows = await db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? ORDER BY p.created_at DESC, p.id DESC`).all(req.user.id);
   res.json({
-    photos: await Promise.all(rows.map(async r => await shapePhoto(r, req.user)))
+    photos: await shapePhotos(rows, req.user)
   });
 });
 me.get('/inspired', requireUser, async (req, res) => {
@@ -43,7 +43,7 @@ me.get('/inspired', requireUser, async (req, res) => {
       WHERE i.user_id = ? AND p.status = 'approved'
       ORDER BY i.created_at DESC`).all(req.user.id);
   res.json({
-    photos: await Promise.all(rows.map(async r => await shapePhoto(r, req.user)))
+    photos: await shapePhotos(rows, req.user)
   });
 });
 users.post('/:username/follow', requireUser, async (req, res) => {

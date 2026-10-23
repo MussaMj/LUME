@@ -14,7 +14,7 @@ import { queueUploadEmail, flushMailQueue } from '../mail.js';
 import { photosChanged, engagementChanged } from '../events.js';
 import { requireUser } from '../auth.js';
 import { PROVINCE_IDS } from '../provinces.js';
-import { HttpError, shapePhoto, text } from '../util.js';
+import { HttpError, shapePhoto, shapePhotos, text } from '../util.js';
 export const UPLOAD_DIR = '/tmp/lume';
 const ALLOWED = {
   jpg: 'jpg',
@@ -87,7 +87,7 @@ router.get('/', async (req, res) => {
   const order = req.query.sort === 'popular' ? `${engagementScore()} DESC, p.created_at DESC, p.id DESC` : req.query.sort === 'recent' ? 'p.created_at DESC, p.id DESC' : 'mix(p.id, ?)';
   const rows = await db.prepare(`${PHOTO_SELECT} WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ? OFFSET ?`).all(...params, ...(req.query.sort === 'popular' || req.query.sort === 'recent' ? [] : [seed]), limit + 1, page * limit);
   res.json({
-    photos: await Promise.all(rows.slice(0, limit).map(async r => await shapePhoto(r, req.user))),
+    photos: await shapePhotos(rows.slice(0, limit), req.user),
     hasMore: rows.length > limit
   });
 });
@@ -109,11 +109,12 @@ router.get('/map-preview', async (req, res) => {
   const rows = await db.prepare(`SELECT province, COUNT(*) AS total, (SELECT p2.id FROM photos p2
     WHERE p2.province=p.province AND p2.status='approved' ORDER BY p2.created_at DESC,p2.id DESC LIMIT 1) AS photo_id
     FROM photos p WHERE status='approved' GROUP BY province`).all();
+  const photos = rows.length ? await shapePhotos(await db.prepare(`${PHOTO_SELECT} WHERE p.id IN (${rows.map(() => '?').join(',')})`).all(...rows.map(row => row.photo_id)), req.user) : [];
   res.json({
-    provinces: Object.fromEntries(await Promise.all(rows.map(async r => [r.province, {
-      total: r.total,
-      photo: await shapePhoto(await db.prepare(`${PHOTO_SELECT} WHERE p.id=?`).get(r.photo_id), req.user)
-    }])))
+    provinces: Object.fromEntries(rows.map(row => [row.province, {
+      total: row.total,
+      photo: photos.find(photo => photo.id === row.photo_id)
+    }]))
   });
 });
 router.get('/:id/related', async (req, res) => {

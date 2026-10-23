@@ -5,7 +5,7 @@ import { engagementChanged } from '../events.js';
 import { Router } from "npm:express@5.2.1";
 import { db, PHOTO_SELECT } from '../db.js';
 import { requireUser } from '../auth.js';
-import { HttpError, shapePhoto, text } from '../util.js';
+import { HttpError, shapePhotos, text } from '../util.js';
 const router = Router();
 router.use(requireUser);
 async function ownCollection(req) {
@@ -56,10 +56,10 @@ router.post('/', async (req, res) => {
 });
 router.get('/:id', async (req, res) => {
   const c = await ownCollection(req);
-  const photos = await Promise.all((await db.prepare(`${PHOTO_SELECT}
+  const photos = await shapePhotos(await db.prepare(`${PHOTO_SELECT}
       JOIN collection_items ci ON ci.photo_id = p.id
       WHERE ci.collection_id = ? AND p.status = 'approved'
-      ORDER BY ci.added_at DESC`).all(c.id)).map(async r => await shapePhoto(r, req.user)));
+      ORDER BY ci.added_at DESC`).all(c.id), req.user);
   res.json({
     collection: {
       id: c.id,

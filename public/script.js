@@ -85,7 +85,7 @@ function renderEditorial() {
     tile.dataset.tema = foto.tema; tile.dataset.index = i;
     tile.setAttribute('aria-label', `${foto.titulo}, ${foto.local}, de ${foto.autor}`);
     const img = document.createElement('img');
-    img.loading = 'lazy'; img.decoding = 'async'; img.alt = `${foto.titulo}, ${foto.local}`; img.src = foto.thumb || foto.src;
+    img.loading = 'lazy'; img.decoding = 'async'; img.alt = `${foto.titulo}, ${foto.local}`; img.src = (foto.thumb || foto.src).replace(/^(\/photos\/.*-thumb)\.jpg$/, '$1.webp');
     const cap = document.createElement('span'); cap.className = 'tile__caption';
     const title = document.createElement('span'); title.className = 'tile__title'; title.textContent = foto.titulo;
     const place = document.createElement('span'); place.className = 'tile__place'; place.textContent = foto.local;
@@ -412,8 +412,9 @@ if (new URLSearchParams(location.search).get('error') === 'access-denied') {
 }
 
 // Only the editorial grid consumes live community photos. The signature Hero remains static.
-bento.setAttribute('aria-busy','true');
-for (let i=0;i<8;i++) { const skeleton=document.createElement('div'); skeleton.className='editorial-skeleton'; bento.append(skeleton); }
+FOTOS = localFallback.slice(0,8);
+renderEditorial();
+bento.dataset.signature=JSON.stringify(FOTOS);
 void loadEditorial();
 const editorialLive = getLiveEvents();
 let editorialTimer;

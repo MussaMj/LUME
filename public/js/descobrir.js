@@ -44,6 +44,10 @@ async function loadFeatured() {
   $('.featured__badge').textContent = 'Foto da Semana';
   const img = $('#featuredImg');
   img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+  if (photo.width > 640 && photo.thumb !== photo.src) {
+    img.srcset = `${photo.thumb} 640w, ${photo.src} ${photo.width}w`;
+    img.sizes = '(max-width: 700px) 100vw, 65vw';
+  } else { img.removeAttribute('srcset'); img.removeAttribute('sizes'); }
   img.src = photo.src;
   img.alt = `${photo.title}, ${photo.city}`;
   $('#featuredTitle').textContent = photo.title;
@@ -285,8 +289,6 @@ function scheduleRefresh() {
 }
 const live = getLiveEvents();
 live.addEventListener('photos', scheduleRefresh);
-let firstConnection=true;
-live.addEventListener('open',()=>{if(firstConnection){firstConnection=false;scheduleRefresh();}});
 window.addEventListener('focus', scheduleRefresh);
 
 loadFeatured().catch((err) => toast(err.message, { error: true }));

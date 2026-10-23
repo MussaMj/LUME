@@ -104,3 +104,24 @@ test('social updates stream only aggregate public counts through SSE',async()=>{
     assert.deepEqual(JSON.parse(dataLine.slice(6)),{photoId:4,inspiredCount:1,savedCount:0});
   } finally { await reader.cancel().catch(()=>{}); controller.abort(); }
 });
+
+test('gallery batches personal inspiration flags without exposing private fields',async()=>{
+  const {shapePhotos,shapePhoto}=await import('../server/util.js');
+  const {PHOTO_SELECT}=await import('../server/db.js');
+  const rows=db.prepare(`${PHOTO_SELECT} WHERE p.status='approved' ORDER BY p.id`).all();
+  const viewer={id:1,username:'author',role:'user'};
+  const expected=rows.map(row=>shapePhoto(row,viewer));
+  const prepare=db.prepare;let queries=0;
+  db.prepare=function(...args){queries++;return prepare.apply(this,args);};
+  try{assert.deepEqual(shapePhotos(rows,viewer),expected);assert.equal(queries,1);assert.equal(shapePhotos(rows,null).some(photo=>photo.author.email),false);}
+  finally{db.prepare=prepare;}
+});
+
+test('optimised catalogue thumbnails exist while full-sized photo URLs stay unchanged',async()=>{
+  const {shapePhoto}=await import('../server/util.js');
+  const {readdirSync,existsSync}=await import('node:fs');
+  const files=readdirSync('public/photos',{recursive:true}).filter(file=>file.endsWith('-thumb.jpg'));
+  assert.ok(files.length>0);
+  for(const file of files){const thumb='/photos/'+file;const src=thumb.replace('-thumb','');const photo=shapePhoto({thumb,src},null);assert.equal(photo.src,src);assert.equal(photo.thumb,thumb.replace(/\.jpg$/,'.webp'));assert.ok(existsSync('public'+photo.thumb));}
+  assert.equal(shapePhoto({thumb:'/media/private.jpg'},null).thumb,'/media/private.jpg');
+});

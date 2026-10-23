@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db, PHOTO_SELECT } from '../db.js';
 import { requireUser } from '../auth.js';
-import { HttpError, publicUser, shapePhoto } from '../util.js';
+import { HttpError, publicUser, shapePhotos } from '../util.js';
 
 export const users = Router();
 export const me = Router();
@@ -10,9 +10,8 @@ export const me = Router();
 users.get('/:username', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE username = ?').get(req.params.username);
   if (!user) throw new HttpError(404, 'Fotógrafo não encontrado.');
-  const photos = db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? AND p.status = 'approved' ORDER BY p.created_at DESC, p.id DESC`)
-    .all(user.id)
-    .map((r) => shapePhoto(r, req.user));
+  const photos = shapePhotos(db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? AND p.status = 'approved' ORDER BY p.created_at DESC, p.id DESC`)
+    .all(user.id), req.user);
   const { email, role, ...profile } = publicUser(user);
   const featuredCount = db.prepare(`SELECT COUNT(DISTINCT f.photo_id) AS n FROM featured f
       JOIN photos p ON p.id = f.photo_id WHERE p.user_id = ?`).get(user.id).n;
@@ -29,7 +28,7 @@ users.get('/:username', (req, res) => {
 // Os meus envios (todos os estados)
 me.get('/photos', requireUser, (req, res) => {
   const rows = db.prepare(`${PHOTO_SELECT} WHERE p.user_id = ? ORDER BY p.created_at DESC, p.id DESC`).all(req.user.id);
-  res.json({ photos: rows.map((r) => shapePhoto(r, req.user)) });
+  res.json({ photos: shapePhotos(rows, req.user) });
 });
 
 // Fotografias que me inspiraram
@@ -38,7 +37,7 @@ me.get('/inspired', requireUser, (req, res) => {
       JOIN inspired i ON i.photo_id = p.id
       WHERE i.user_id = ? AND p.status = 'approved'
       ORDER BY i.created_at DESC`).all(req.user.id);
-  res.json({ photos: rows.map((r) => shapePhoto(r, req.user)) });
+  res.json({ photos: shapePhotos(rows, req.user) });
 });
 
 users.post('/:username/follow', requireUser, (req, res) => {

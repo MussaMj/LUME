@@ -2,7 +2,7 @@ import { engagementChanged } from '../events.js';
 import { Router } from 'express';
 import { db, PHOTO_SELECT } from '../db.js';
 import { requireUser } from '../auth.js';
-import { HttpError, shapePhoto, text } from '../util.js';
+import { HttpError, shapePhotos, text } from '../util.js';
 
 // Álbuns de favoritos: sempre privados, só o dono os vê
 const router = Router();
@@ -39,10 +39,10 @@ router.post('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const c = ownCollection(req);
-  const photos = db.prepare(`${PHOTO_SELECT}
+  const photos = shapePhotos(db.prepare(`${PHOTO_SELECT}
       JOIN collection_items ci ON ci.photo_id = p.id
       WHERE ci.collection_id = ? AND p.status = 'approved'
-      ORDER BY ci.added_at DESC`).all(c.id).map((r) => shapePhoto(r, req.user));
+      ORDER BY ci.added_at DESC`).all(c.id), req.user);
   res.json({ collection: { id: c.id, name: c.name, createdAt: c.created_at, isPublic: !!c.is_public }, photos });
 });
 
