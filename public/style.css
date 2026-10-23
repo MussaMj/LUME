@@ -642,3 +642,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* Keep composited cards/text out of the mobile menu's paint layer (including Safari). */
 body.menu-open > :not(.nav):not(.nav__links) { visibility: hidden !important; }
+
+/* Crédito de desenvolvimento no rodapé. */
+.footer__legal { display:flex; flex-direction:column; align-items:flex-end; gap:14px; min-width:0; }
+.footer__maker { font-size:.7rem; color:var(--muted); line-height:1.6; }
+.footer__maker a { color:var(--text); border-bottom:1px solid var(--line); transition:color .2s,border-color .2s; }
+.footer__maker a:hover { color:var(--accent); border-color:var(--accent); }
+.footer__maker a:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+@media(max-width:720px) { .footer__legal { align-items:flex-start; } }
