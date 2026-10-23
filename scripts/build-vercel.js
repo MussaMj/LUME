@@ -1,7 +1,17 @@
 import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-const backend=new URL(process.env.BACKEND_ORIGIN || 'invalid');
-if(backend.protocol!=='https:' || backend.username || backend.password || backend.pathname!=='/' || backend.search || backend.hash)throw new Error('BACKEND_ORIGIN deve ser a origem HTTPS do backend persistente, sem caminho.');
+function configurationError(message) {
+  console.error(`[Lume] ${message}\nConfigura BACKEND_ORIGIN nas variáveis de ambiente do projecto Vercel e faz um novo deploy.\nUsa o URL HTTPS real do servidor Express, não localhost, um IP da rede local ou o próprio frontend. Consulta DEPLOYMENT.md.`);
+  process.exit(1);
+}
+const backendValue=process.env.BACKEND_ORIGIN?.trim();
+if(!backendValue)configurationError('Falta a variável BACKEND_ORIGIN. O frontend precisa de um backend persistente para contas, uploads e SQLite.');
+let backend;
+try { backend=new URL(backendValue); }
+catch { configurationError('BACKEND_ORIGIN não contém um URL válido.'); }
+if(backend.protocol!=='https:' || backend.username || backend.password || backend.pathname!=='/' || backend.search || backend.hash)configurationError('BACKEND_ORIGIN deve ser uma origem HTTPS sem credenciais, caminho, query ou fragmento.');
+if(['localhost','127.0.0.1','::1','[::1]'].includes(backend.hostname) || backend.hostname.endsWith('.localhost'))configurationError('BACKEND_ORIGIN aponta para um servidor local, inacessível à Vercel.');
+if([process.env.VERCEL_URL,process.env.VERCEL_PROJECT_PRODUCTION_URL].filter(Boolean).includes(backend.host))configurationError('BACKEND_ORIGIN aponta para este frontend e provocaria um ciclo de pedidos.');
 const origin=backend.origin;
 const output=path.resolve('.vercel/output');
 rmSync(output,{recursive:true,force:true});mkdirSync(path.join(output,'static'),{recursive:true});
