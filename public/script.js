@@ -14,9 +14,8 @@ initNav('inicio');
    ========================================================== */
 
 const CONFIG = {
-  // Email para colaborações e impressões. Vazio = o botão abre o Instagram.
+  // Mostrar o contacto apenas quando existir um endereço configurado.
   email: '',
-  instagram: 'https://www.instagram.com/mainearqvs',
 };
 
 const unsplash = (file, w) => `https://images.unsplash.com/${file}?ixlib=rb-4.1.0&auto=format&q=80&w=${w}`;
@@ -390,11 +389,10 @@ document.addEventListener('keydown', (e) => {
 /* ---------- Contacto ---------- */
 const contactLink = document.getElementById('contactEmail');
 if (CONFIG.email) {
+  contactLink.hidden = false;
   contactLink.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent('Colaboração / Impressões — LUME')}`;
 } else {
-  contactLink.href = CONFIG.instagram;
-  contactLink.target = '_blank';
-  contactLink.rel = 'noopener';
+  contactLink.hidden = true;
 }
 document.getElementById('year').textContent = new Date().getFullYear();
 

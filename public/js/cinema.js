@@ -378,7 +378,6 @@ function panel(photo) {
       h('span', { class: 'label' }, 'Partilhar'),
       h('span', { class: 'cinema__divider' }),
       h('button', { class: 'action action--icon', 'aria-label': 'Partilhar no WhatsApp', title: 'WhatsApp', onclick: () => shareWhatsApp(photo) }, icon('whatsapp')),
-      h('button', { class: 'action action--icon', 'aria-label': 'Partilhar nas Stories do Instagram', title: 'Instagram Stories', onclick: () => shareStory(photo) }, icon('story')),
       h('button', { class: 'action action--icon', 'aria-label': 'Copiar link', title: 'Copiar link', onclick: () => copyLink(photo) }, icon('link'))),
 
     state.list.length > 1 && h('p', { class: 'cinema__count' }, `${state.index + 1} / ${state.list.length}`));
